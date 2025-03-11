@@ -10,3 +10,6 @@ class AccountManager:
         """RETURNs TRUE IF THE IBAN RECEIVED IS VALID SPANISH IBAN,
         OR FALSE IN OTHER CASE"""
         return True
+
+    def is_young(self, age):
+        pass
