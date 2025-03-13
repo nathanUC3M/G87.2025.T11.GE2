@@ -1,5 +1,6 @@
 """class for testing the regsiter_order method"""
 import unittest
+import re
 from uc3m_money import AccountManager
 
 class MyTestCase(unittest.TestCase):
@@ -127,6 +128,9 @@ class MyTestCase(unittest.TestCase):
                             transfer_type="ORDINARY", transfer_concept="Payment for services",
                             transfer_date="04/02/2025", transfer_amount=10000.01)  # BVNV14
 
+    def test_deposit_into_account(self):
+        with self.assertTrue(self.valid_request.deposit_into_account):
+            AccountManager.deposit_into_account("test.json")
 
 if __name__ == '__main__':
     unittest.main()
