@@ -18,12 +18,13 @@ class AccountManager:
     def deposit_into_account(input_file):
         # open file, verify account number and deposit value
         try:
+            hold1 = AccountManager();
             with open(input_file, "r", encodings="utf-8", newline="") as f:
                 data_list = json.load(input_file)
 
-                strIBAN = data_list(1)
-                strAMOUNT = data_list(2)
-                hold = self.validate_iban(strIBAN)
+                strIBAN = data_list[1]
+                strAMOUNT = data_list[2]
+                hold = hold1.self.validate_iban(strIBAN)
 
                 objAM = AccountDeposit(strAMOUNT, strIBAN)
         except FileNotFoundError:
