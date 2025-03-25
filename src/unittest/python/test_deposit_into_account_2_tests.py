@@ -1,183 +1,192 @@
 """Testing module for the deposit into account method"""
 import unittest
-from src.main.python.uc3m_money import AccountManager, AccountManagementException
+from uc3m_money import AccountManager, AccountManagementException
 
-class MyTestCase3(unittest.TestCase):
+class MyTestCase2(unittest.TestCase):
     """
     Unit test class for testing the Account Manager Class
     Contains test cases related to the derivation tree given
     for the inputs of this class.
     """
-    def test_dup_decimal(self):
+    def test_dup_equal(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the decimal place is duplicated in the JSON file.
+        when an equals sign (between the fields) is duplicated in the JSON file.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test41.json")
+            ob_invalid.deposit_into_account("test21.json")
 
-    def test_modify_decimal(self):
+    def test_delete_value_1(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the decimal place is modified in the JSON file.
+        when the first value (iban number) in the JSON file is deleted.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test42.json")
+            ob_invalid.deposit_into_account("test22.json")
 
-    def test_delete_after_decimal(self):
+    def test_dup_value_1(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the number after the decimal point is deleted in the JSON file.
+        when the first value (iban number) in the JSON file is duplicated.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test43.json")
+            ob_invalid.deposit_into_account("test23.json")
 
-    def test_dup_after_decimal(self):
+    def test_modify_separator(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the number after the decimal point is duplicated in the JSON file.
+        when the equals sign in the JSON file is modified.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test44.json")
+            ob_invalid.deposit_into_account("test24.json")
 
-    def test_modify_value_after_decimal(self):
+    def test_delete_label_2(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the number after the decimal point is modified in the JSON file.
+        when the second label (AMOUNT) in the JSON file is deleted.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test45.json")
+            ob_invalid.deposit_into_account("test25.json")
 
-    def test_modify_quotation_value_2(self):
+    def test_dup_label_two(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the quotation mark before the second value is modified in the JSON file.
+        when the second label (AMOUNT) in the JSON file is duplicated.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test46.json")
+            ob_invalid.deposit_into_account("test26.json")
 
-    def test_modify_quotation_after_v2(self):
+    def test_delete_equal_again(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the quotation mark after the second value is modified in the JSON file.
+        when the equals sign in the second field (the amount) of the JSON file is deleted.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test47.json")
+            ob_invalid.deposit_into_account("test27.json")
 
-    def test_modify_eur_content(self):
+    def test_dup_equal_again(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the "EUR" currency content is modified in the JSON file.
+        when the equals sign in the second field (the amount) of the JSON file is duplicated.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test48.json")
+            ob_invalid.deposit_into_account("test28.json")
 
-    def test_modification_equal_field_2(self):
+    def test_delete_second_value(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the equal sign in the second field is modified in the JSON file.
+        when the second value (euros) in the JSON file is deleted.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test49.json")
+            ob_invalid.deposit_into_account("test29.json")
 
-    def test_modify_quotation_before_l1(self):
+    def test_duplicate_second_value(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the quotation mark before label 1 is modified in the JSON file.
+        when the second value (euros) in the JSON file is duplicated.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test50.json")
+            ob_invalid.deposit_into_account("test30.json")
 
-    def test_modify_l1(self):
+    def test_modification_equal_label_1(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when label 1 is modified in the JSON file.
+        when the equals sign in the first label is modified.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test51.json")
+            ob_invalid.deposit_into_account("test31.json")
 
-    def test_modify_quotation_after_l1(self):
+    def test_delete_iban_num(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the quotation mark after label 1 is modified in the JSON file.
+        when the IBAN number in the JSON file is deleted.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test52.json")
+            ob_invalid.deposit_into_account("test32.json")
 
-    def test_modify_quotation_before_v1(self):
+    def test_dup_iban_num(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the quotation mark before value 1 is modified in the JSON file.
+        when the IBAN number in the JSON file is duplicated.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test53.json")
+            ob_invalid.deposit_into_account("test33.json")
 
-    def test_modify_country_code(self):
+    def test_delete_eur(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the IBAN country code is modified in the JSON file.
+        when the currency identifier "EUR " is deleted from the JSON file.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test54.json")
+            ob_invalid.deposit_into_account("test34.json")
 
-    def test_modify_iban_num(self):
+    def test_dup_eur(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the IBAN numbers are modified in the JSON file.
+        when the currency identifier "EUR " is duplicated in the JSON file.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test55.json")
+            ob_invalid.deposit_into_account("test35.json")
 
-    def test_modify_quotation_before_l2(self):
+    def test_modify_eur(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the quotation mark before label 2 is modified in the JSON file.
+        when the currency identifier "EUR " is modified in the JSON file.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test56.json")
+            ob_invalid.deposit_into_account("test36.json")
 
-    def test_modify_quotation_after_v1(self):
+    def test_delete_before_decimal_num(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the quotation mark after value 1 is modified in the JSON file.
+        when the number before the decimal point is deleted in the JSON file.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test57.json")
+            ob_invalid.deposit_into_account("test37.json")
 
-    def test_modify_amount(self):
+    def test_dup_before_decimal_num(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the "AMOUNT" field is modified in the JSON file.
+        when the number before the decimal point is duplicated in the JSON file.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test58.json")
+            ob_invalid.deposit_into_account("test38.json")
 
-    def test_modify_quote_after_l2(self):
+    def test_modify_num_before_decimal(self):
         """
         Tests that the deposit_into_account method raises an AccountManagementException
-        when the quotation mark after label 2 is modified in the JSON file.
+        when the number before the decimal point is modified in the JSON file.
         """
         ob_invalid = AccountManager()
         with self.assertRaises(AccountManagementException):
-            ob_invalid.deposit_into_account("test59.json")
+            ob_invalid.deposit_into_account("test39.json")
+
+    def test_delete_decimal(self):
+        """
+        Tests that the deposit_into_account method raises an AccountManagementException
+        when the decimal place is deleted in the JSON file.
+        """
+        ob_invalid = AccountManager()
+        with self.assertRaises(AccountManagementException):
+            ob_invalid.deposit_into_account("test40.json")
 
 if __name__ == '__main__':
     unittest.main()

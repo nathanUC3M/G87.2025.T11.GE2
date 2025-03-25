@@ -1,7 +1,7 @@
 """class for testing the register_order method"""
 import unittest
-from src.main.python.uc3m_money.transfer_request import TransferRequest
-from src.main.python.uc3m_money.account_management_exception import AccountManagementException
+from uc3m_money.transfer_request import TransferRequest
+from uc3m_money.account_management_exception import AccountManagementException
 
 class MyTestCase(unittest.TestCase):
     """class for testing the register_order method"""
@@ -174,8 +174,8 @@ class MyTestCase(unittest.TestCase):
         """Test that an amount with too many decimal places raises an exception."""
         with self.assertRaises(AccountManagementException):
             TransferRequest(
-                from_iban="ES5930045568068979213666",
-                to_iban="ES6120809767496917112789",
+                from_iban="ES3300813648834254477713",
+                to_iban="ES6730044874916517558463",
                 transfer_type="ORDINARY",
                 transfer_concept="Payment for services",
                 transfer_date="04/02/2025",

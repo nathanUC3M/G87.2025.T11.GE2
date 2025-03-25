@@ -2,8 +2,8 @@
 import unittest
 import json
 import os
-from src.main.python.uc3m_money.account_manager import AccountManager
-from src.main.python.uc3m_money.account_management_exception import AccountManagementException
+from uc3m_money.account_manager import AccountManager
+from uc3m_money.account_management_exception import AccountManagementException
 
 
 class TestCalculateBalanceWithProjectData(unittest.TestCase):
