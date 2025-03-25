@@ -31,9 +31,9 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(len(self.valid_request.to_iban) == 24)
         self.assertTrue(self.valid_request.to_iban.startswith('ES'))
 
-    def test_invalid_iban_length(self):
+    def test_invalid_from_iban_length(self):
         """Test that an IBAN with an invalid length raises a ValueError."""
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(
                 from_iban="ES59",
                 to_iban="ES6120809767496917112789",
@@ -43,10 +43,22 @@ class MyTestCase(unittest.TestCase):
                 transfer_amount=400.34
             )
 
+    def test_invalid_to_iban_length(self):
+        """Test that an IBAN with an invalid length raises a ValueError."""
+        with self.assertRaises(AccountManagementException):
+            TransferRequest(
+                from_iban="ES6120809767496917112789",
+                to_iban="ES59",
+                transfer_type="ORDINARY",
+                transfer_concept="Payment for services",
+                transfer_date="04/02/2025",
+                transfer_amount=400.34
+            )
+
     # Test for transfer type validations
     def test_invalid_transfer_type(self):
         """Test that an invalid transfer type raises a ValueError."""
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(
                 from_iban="ES5930045568068979213666",
                 to_iban="ES6120809767496917112789",
@@ -59,7 +71,7 @@ class MyTestCase(unittest.TestCase):
     # Test for date validations
     def test_invalid_date_format(self):
         """Test that an invalid date format raises a ValueError."""
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(
                 from_iban="ES5930045568068979213666",
                 to_iban="ES6120809767496917112789",
@@ -72,7 +84,7 @@ class MyTestCase(unittest.TestCase):
     # Test for amount validations
     def test_invalid_amount_range(self):
         """Test that an amount out of the valid range raises a ValueError."""
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(
                 from_iban="ES5930045568068979213666",
                 to_iban="ES6120809767496917112789",
@@ -95,7 +107,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_invalid_concept_length(self):
         """Test that an invalid transfer concept length raises a ValueError."""
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(
                 from_iban="ES5930045568068979213666",
                 to_iban="ES6120809767496917112789",
@@ -107,12 +119,12 @@ class MyTestCase(unittest.TestCase):
 
     def test_boundary_date_values(self):
         """Test that boundary date values are correctly validated."""
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(from_iban="ES5930045568068979213666",
                             to_iban="ES6120809767496917112789",
                             transfer_type="ORDINARY", transfer_concept="Payment for services",
                             transfer_date="00/02/2025", transfer_amount=400.34)  # BVNV9
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(from_iban="ES5930045568068979213666",
                             to_iban="ES6120809767496917112789",
                             transfer_type="ORDINARY", transfer_concept="Payment for services",
@@ -120,12 +132,12 @@ class MyTestCase(unittest.TestCase):
 
     def test_boundary_amount_values(self):
         """Test that boundary values for amount are correctly validated."""
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(from_iban="ES5930045568068979213666",
                             to_iban="ES6120809767496917112789",
                             transfer_type="ORDINARY", transfer_concept="Payment for services",
                             transfer_date="04/02/2025", transfer_amount=9.99)  # BVNV13
-        with self.assertRaises(ValueError):
+        with self.assertRaises(AccountManagementException):
             TransferRequest(from_iban="ES5930045568068979213666",
                             to_iban="ES6120809767496917112789",
                             transfer_type="ORDINARY", transfer_concept="Payment for services",
