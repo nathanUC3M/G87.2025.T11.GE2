@@ -2,10 +2,10 @@
 import os
 import re
 from pathlib import Path
-
-from .account_management_exception import AccountManagementException
 from datetime import datetime, timezone
 import json
+from .account_deposit import AccountDeposit
+from .account_management_exception import AccountManagementException
 
 class AccountManager:
     """Class for providing the methods for managing the orders"""
@@ -73,8 +73,6 @@ class AccountManager:
         :raises AccountManagementException: If the file is missing, improperly formatted,
         contains invalid data, or encounters an internal error
         """
-        from .account_deposit import AccountDeposit
-        from .account_management_exception import AccountManagementException
         # open file, verify account number and deposit value
         current_spot = os.getcwd()
         json_file_path = os.path.join(current_spot, 'json_files', input_file)
@@ -116,7 +114,16 @@ class AccountManager:
             raise AccountManagementException(f"Internal processing error: {str(e)}") from e
 
     def calculate_balance(self, iban: str) -> bool:
+        """
+        Calculates the balance for a given IBAN by processing transactions from a JSON file,
+        validating the IBAN and transaction amounts, and storing the calculated balance.
 
+        :param iban (str): The IBAN for which to calculate the balance
+        :return: bool: True if the balance calculation and storage were successful
+        :raises AccountManagementException: If the IBAN is invalid,
+        the transactions file is missing, improperly formatted, contains invalid data,
+        or encounters an internal error during processing
+        """
         current_spot = os.getcwd()
         json_file_path = os.path.join(current_spot, 'Transactions.json')
 
@@ -125,26 +132,31 @@ class AccountManager:
                 raise AccountManagementException("Invalid IBAN")
 
             try:
-                with open(json_file_path, "r") as file:
+                with open(json_file_path, "r", encoding="utf-8") as file:
                     transactions = json.load(file)
-            except FileNotFoundError:
-                raise AccountManagementException(f"Transactions file '{json_file_path}' not found")
-            except json.JSONDecodeError:
-                raise AccountManagementException(f"Invalid JSON format in '{json_file_path}'")
+            except FileNotFoundError as exc:
+                raise AccountManagementException(f"Transactions file "
+                                                 f"'{json_file_path}' not found") from exc
+            except json.JSONDecodeError as exc:
+                raise AccountManagementException(f"Invalid JSON format in "
+                                                 f"'{json_file_path}'") from exc
 
             balance = 0.0
             iban_found = False
             for transaction in transactions:
                 if transaction.get("IBAN") == iban:
                     iban_found = True
-                    if "amount" not in transaction or not isinstance(transaction["amount"], (int, float, str)):
-                        raise AccountManagementException(f"Invalid amount field in transaction: {transaction}")
+                    if ("amount" not in transaction or not
+                    isinstance(transaction["amount"], (int, float, str))):
+                        raise (AccountManagementException
+                               (f"Invalid amount field in transaction: {transaction}"))
                     try:
                         amount = float(transaction["amount"])
                         balance += amount
-                    except ValueError:
+                    except ValueError as exc:
                         raise AccountManagementException(
-                            f"Invalid amount format in transaction: {transaction}")
+                            f"Invalid amount format in transaction: "
+                            f"{transaction}") from exc
 
             if not iban_found:
                 raise AccountManagementException(f"IBAN '{iban}' not found in transactions")
@@ -157,16 +169,16 @@ class AccountManager:
             }
             current_spot_again = os.getcwd()
             json_file_path_new = os.path.join(current_spot_again, 'test_balances.json')
-            print(json_file_path_new)
             try:
-                with open(json_file_path_new, "a") as file:
+                with open(json_file_path_new, "a", encoding="utf-8") as file:
                     json.dump(balance_data, file)
                     file.write("\n")
             except Exception as e:
-                raise AccountManagementException(f"Balance data saved incorrectly: {e}")
+                raise AccountManagementException(f"Balance data saved incorrectly: "
+                                                 f"{e}") from e
 
             return True
         except AccountManagementException as e:
             raise e
         except Exception as e:
-            raise AccountManagementException(f"Error with processing: {e}")
+            raise AccountManagementException(f"Error with processing: {e}") from e
