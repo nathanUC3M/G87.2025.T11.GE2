@@ -160,7 +160,7 @@ class MyTestCase(unittest.TestCase):
         # Use the same data as setUp for consistency
         request = TransferRequest(
             from_iban="ES5930045568068979213666",
-            to_iban="ES6120809767496917112789",
+            to_iban="ES1620808859808252483148",
             transfer_type="ORDINARY",
             transfer_concept="Payment for services",
             transfer_date="02/04/2025",
