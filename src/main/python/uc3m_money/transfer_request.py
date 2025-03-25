@@ -86,6 +86,44 @@ class TransferRequest:
             raise AccountManagementException(f"Failed to save transfer: "
                                              f"{str(e)}") from e
 
+    def delete_from_json(self, filename: str = "transfers.json"):
+        """Deletes transfer data from JSON file."""
+        try:
+            # Generate the data dictionary of this transfer using the same keys
+            transfer_data = self.to_json()
+
+            # Read existing transfers
+            updated_transfers = []
+            found = False
+            try:
+                with open(filename, "r", encoding="utf-8") as file:
+                    existing_transfers = [json.loads(line) for line in file if line.strip()]
+
+                    # Iterate over existing transfers to filter out the one to delete
+                    for transfer in existing_transfers:
+                        if all(transfer[key] == transfer_data[key] for key in transfer_data if
+                               key != "time_stamp" and key != "transfer_code"):
+                            found = True
+                            continue  # Skip adding this to updated_transfers to effectively delete it
+                        updated_transfers.append(transfer)
+
+            except FileNotFoundError:
+                raise AccountManagementException("File not found. No transfer to delete.")
+
+            if not found:
+                raise AccountManagementException("No matching transfer found to delete.")
+
+            # Write the updated list back to the file, excluding the deleted transfer
+            with open(filename, "w", encoding="utf-8") as file:
+                for transfer in updated_transfers:
+                    json.dump(transfer, file)
+                    file.write("\n")
+
+        except AccountManagementException as e:
+            raise e  # Re-raise any custom exceptions
+        except Exception as e:
+            raise AccountManagementException(f"Failed to delete transfer: {str(e)}") from e
+
     @property
     def from_iban(self):
         """Sender's iban"""

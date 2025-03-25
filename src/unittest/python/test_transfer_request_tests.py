@@ -160,7 +160,7 @@ class MyTestCase(unittest.TestCase):
         # Use the same data as setUp for consistency
         request = TransferRequest(
             from_iban="ES5930045568068979213666",
-            to_iban="ES9121000418450200051332",
+            to_iban="ES9514659166625939748647",
             transfer_type="ORDINARY",
             transfer_concept="Payment for services",
             transfer_date="02/04/2025",
@@ -169,7 +169,7 @@ class MyTestCase(unittest.TestCase):
         request.save_to_json()  # First save should succeed
         with self.assertRaises(AccountManagementException):
             request.save_to_json()  # Second save should fail
-
+        request.delete_from_json()
     def test_invalid_decimal_places(self):
         """Test that an amount with too many decimal places raises an exception."""
         with self.assertRaises(AccountManagementException):
