@@ -1,16 +1,13 @@
 """class for testing the regsiter_order method"""
 import unittest
-from uc3m_money import AccountManager
+from src.main.python.uc3m_money.transfer_request import TransferRequest
+from src.main.python.uc3m_money.account_management_exception import AccountManagementException
 
 class MyTestCase(unittest.TestCase):
     """class for testing the register_order method"""
     def test_something( self ):
         """dummy test"""
         self.assertEqual(True, False)
-    def test_isyiung_tc1(self):
-        am = AccountManager()
-        res = am.is_young(17)
-        self.assertEqual(True, res)
 
     def setUp(self):
         self.valid_request = TransferRequest(
@@ -127,6 +124,42 @@ class MyTestCase(unittest.TestCase):
                             transfer_type="ORDINARY", transfer_concept="Payment for services",
                             transfer_date="04/02/2025", transfer_amount=10000.01)  # BVNV14
 
+    def test_past_date(self):
+        with self.assertRaises(AccountManagementException()):
+            TransferRequest(
+                from_iban="ES5930045568068979213666",
+                to_iban="ES6120809767496917112789",
+                transfer_type="ORDINARY",
+                transfer_concept="Payment for services",
+                transfer_date="01/01/2020",
+                transfer_amount=400.34
+            )
+
+    def test_duplicate_transfer(self):
+        """Test that saving the same transfer twice raises an exception."""
+        # Use the same data as setUp for consistency
+        request = TransferRequest(
+            from_iban="ES5930045568068979213666",
+            to_iban="ES6120809767496917112789",
+            transfer_type="ORDINARY",
+            transfer_concept="Payment for services",
+            transfer_date="04/02/2025",
+            transfer_amount=400.34
+        )
+        request.save_to_json()  # First save should succeed
+        with self.assertRaises(AccountManagementException):
+            request.save_to_json()  # Second save should fail
+
+    def test_invalid_decimal_places(self):
+        with self.assertRaises(AccountManagementException):
+            TransferRequest(
+                from_iban="ES5930045568068979213666",
+                to_iban="ES6120809767496917112789",
+                transfer_type="ORDINARY",
+                transfer_concept="Payment for services",
+                transfer_date="04/02/2025",
+                transfer_amount=400.345  # 3 decimal places
+            )
 
 if __name__ == '__main__':
     unittest.main()
