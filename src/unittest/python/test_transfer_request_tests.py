@@ -1,4 +1,4 @@
-"""class for testing the regsiter_order method"""
+"""class for testing the register_order method"""
 import unittest
 from src.main.python.uc3m_money.transfer_request import TransferRequest
 from src.main.python.uc3m_money.account_management_exception import AccountManagementException
