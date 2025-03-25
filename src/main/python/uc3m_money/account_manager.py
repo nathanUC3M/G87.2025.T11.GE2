@@ -42,7 +42,8 @@ class AccountManager:
         return iban_int % 97 == 1
 
 
-    def validate_amount(self, amount: str):
+    @staticmethod
+    def validate_amount(amount: str):
         """
         Validates the amount to ensure it follows the correct format and is within valid limits.
 

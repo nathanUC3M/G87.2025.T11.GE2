@@ -64,7 +64,7 @@ class TransferRequest:
             # Read existing transfers
             existing_transfers = []
             try:
-                with open(filename, "r", encoding="8") as file:
+                with open(filename, "r", encoding="utf-8") as file:
                     existing_transfers = [json.loads(line) for line in file if line.strip()]
             except FileNotFoundError:
                 pass  # File doesn't exist yet (first transfer)
@@ -77,7 +77,7 @@ class TransferRequest:
                     raise AccountManagementException("Duplicate transfer detected")
 
             # Append new transfer
-            with open(filename, "a", encoding="8") as file:
+            with open(filename, "a", encoding="utf-8") as file:
                 json.dump(transfer_data, file)
                 file.write("\n")
         except AccountManagementException as e:

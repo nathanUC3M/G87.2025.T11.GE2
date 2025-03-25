@@ -1,13 +1,7 @@
 """Testing module for the deposit into account method"""
 import unittest
-import logging
 from src.main.python.uc3m_money import AccountManager, AccountManagementException
 
-logging.basicConfig(
-    filename=r"\src\unittest\python\test_cases.log",
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 class MyTestCase3(unittest.TestCase):
     """
     Unit test class for testing the Account Manager Class
