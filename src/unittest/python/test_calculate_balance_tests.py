@@ -1,3 +1,4 @@
+"""Module to test calculate balance method"""
 import unittest
 import json
 import os
@@ -6,6 +7,7 @@ from src.main.python.uc3m_money.account_management_exception import AccountManag
 
 
 class TestCalculateBalanceWithProjectData(unittest.TestCase):
+    """Class to test calculate balance method"""
     @classmethod
     def setUpClass(cls):
         """Backup original transactions file and create test manager"""
@@ -34,7 +36,7 @@ class TestCalculateBalanceWithProjectData(unittest.TestCase):
 
         # Verify balance calculation (-1280.06 -3094.85 +2424.42 -1021.97 -4795.05 -2213.49)
         expected_balance = -1280.06 - 3094.85 + 2424.42 - 1021.97 - 4795.05 - 2213.49
-        with open(self.test_balances, "r") as f:
+        with open(self.test_balances, "r", encoding="8") as f:
             last_entry = json.loads(f.readlines()[-1])
             self.assertAlmostEqual(last_entry["balance"], expected_balance, places=2)
 
@@ -42,7 +44,8 @@ class TestCalculateBalanceWithProjectData(unittest.TestCase):
         """Test valid IBAN not found in transactions (Path 1_2_4_5_7_8)"""
         with self.assertRaises(AccountManagementException) as context:
             self.manager.calculate_balance("ES4900816334776271964371")
-        self.assertIn("IBAN 'ES4900816334776271964371' not found in transactions", str(context.exception))
+        self.assertIn("IBAN 'ES4900816334776271964371' not found in transactions",
+                      str(context.exception))
 
     # EDGE CASE TESTS
 
@@ -53,7 +56,7 @@ class TestCalculateBalanceWithProjectData(unittest.TestCase):
 
         # Verify balance (+1258.75 +4028.28 +3981.26)
         expected_balance = 1258.75 + 4028.28 + 3981.26
-        with open(self.test_balances, "r") as f:
+        with open(self.test_balances, "r", encoding="8") as f:
             last_entry = json.loads(f.readlines()[-1])
             self.assertAlmostEqual(last_entry["balance"], expected_balance, places=2)
 
@@ -64,7 +67,7 @@ class TestCalculateBalanceWithProjectData(unittest.TestCase):
 
         # Verify balance (-4470.37 +2265.68 +759.39 +1407.49 -3263.04 +4611.51 +4661.96)
         expected_balance = -4470.37 + 2265.68 + 759.39 + 1407.49 - 3263.04 + 4611.51 + 4661.96
-        with open(self.test_balances, "r") as f:
+        with open(self.test_balances, "r", encoding="8") as f:
             last_entry = json.loads(f.readlines()[-1])
             self.assertAlmostEqual(last_entry["balance"], expected_balance, places=2)
 
@@ -75,7 +78,7 @@ class TestCalculateBalanceWithProjectData(unittest.TestCase):
 
         # Verify balance (-1643.06 -2768.05 -3805.22 -1118.72)
         expected_balance = -1643.06 - 2768.05 - 3805.22 - 1118.72
-        with open(self.test_balances, "r") as f:
+        with open(self.test_balances, "r", encoding="8") as f:
             last_entry = json.loads(f.readlines()[-1])
             self.assertAlmostEqual(last_entry["balance"], expected_balance, places=2)
 
