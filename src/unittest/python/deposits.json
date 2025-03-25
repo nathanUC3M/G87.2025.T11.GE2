@@ -1,0 +1,8 @@
+{
+    "alg": "SHA-256",
+    "type": "DEPOSIT",
+    "to_iban": "ES9121000418450200051332",
+    "deposit_amount": "EUR 1000.00",
+    "deposit_date": 1742838900.0,
+    "deposit_signature": "cc5f38885ee9362fc670e795e38bbabceada297a436bc05faf7995ebdbeeac6c"
+}
