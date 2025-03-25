@@ -209,5 +209,3 @@ class TransferRequest:
 
         except Exception as e:
             raise AccountManagementException(str(e))
-
-
