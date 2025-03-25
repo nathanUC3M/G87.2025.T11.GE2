@@ -139,11 +139,11 @@ class TransferRequest:
 
         try:
             day, month, year = map(int, date.split("/"))
-            if not (2025 <= year <= 2050):
+            if not 2025 <= year <= 2050:
                 return False
-            if not (1 <= month <= 12):
+            if not 1 <= month <= 12:
                 return False
-            if not (1 <= day <= 31):
+            if not 1 <= day <= 31:
                 return False
 
             input_date = datetime.strptime(date, "%d/%m/%Y").replace(tzinfo=timezone.utc)
@@ -178,7 +178,8 @@ class TransferRequest:
         """
         try:
             # Validate inputs before creating the TransferRequest object
-            if (not AccountManager.validate_iban(from_iban) or not AccountManager.validate_iban(to_iban)):
+            if (not AccountManager.validate_iban(from_iban) or not
+                AccountManager.validate_iban(to_iban)):
                 raise AccountManagementException("Invalid IBAN")
             if not TransferRequest.validate_concept(concept):
                 raise AccountManagementException("Invalid concept")
@@ -186,13 +187,13 @@ class TransferRequest:
                 raise AccountManagementException("Invalid transfer type")
             if not TransferRequest.validate_date(date):
                 raise AccountManagementException("Invalid date")
-            if not (10.00 <= amount <= 10000.00):
+            if not 10.00 <= amount <= 10000.00:
                 raise AccountManagementException("Invalid amount")
 
             if isinstance(amount, float):
                 if not round(amount, 2) == amount:
                     raise AccountManagementException("Amount must have ≤2 decimal places")
-                from_iban=from_iban,
+                from_iban=from_iban
 
             # TransferRequest object
             transfer = TransferRequest(
@@ -209,5 +210,3 @@ class TransferRequest:
 
         except Exception as e:
             raise AccountManagementException(str(e))
-
-
