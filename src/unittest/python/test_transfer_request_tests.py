@@ -12,7 +12,7 @@ class MyTestCase(unittest.TestCase):
             to_iban="ES6120809767496917112789",
             transfer_type="ORDINARY",
             transfer_concept="Payment for services",
-            transfer_date="04/02/2025",
+            transfer_date="02/04/2025",
             transfer_amount=400.34
         )
 
@@ -20,7 +20,7 @@ class MyTestCase(unittest.TestCase):
     def test_valid_transfer_request(self):
         """Test that a valid transfer request is correctly initialized."""
         self.assertEqual(self.valid_request.transfer_type, "ORDINARY")
-        self.assertEqual(self.valid_request.transfer_date, "04/02/2025")
+        self.assertEqual(self.valid_request.transfer_date, "02/04/2025")
         self.assertEqual(self.valid_request.transfer_amount, 400.34)
 
     # Test for valid and invalid IBANs
@@ -39,7 +39,7 @@ class MyTestCase(unittest.TestCase):
                 to_iban="ES6120809767496917112789",
                 transfer_type="ORDINARY",
                 transfer_concept="Payment for services",
-                transfer_date="04/02/2025",
+                transfer_date="02/04/2025",
                 transfer_amount=400.34
             )
 
@@ -51,7 +51,7 @@ class MyTestCase(unittest.TestCase):
                 to_iban="ES59",
                 transfer_type="ORDINARY",
                 transfer_concept="Payment for services",
-                transfer_date="04/02/2025",
+                transfer_date="02/04/2025",
                 transfer_amount=400.34
             )
 
@@ -64,7 +64,7 @@ class MyTestCase(unittest.TestCase):
                 to_iban="ES6120809767496917112789",
                 transfer_type="UNKNOWN",
                 transfer_concept="Payment for services",
-                transfer_date="04/02/2025",
+                transfer_date="02/04/2025",
                 transfer_amount=400.34
             )
 
@@ -163,7 +163,7 @@ class MyTestCase(unittest.TestCase):
             to_iban="ES6120809767496917112789",
             transfer_type="ORDINARY",
             transfer_concept="Payment for services",
-            transfer_date="04/02/2025",
+            transfer_date="02/04/2025",
             transfer_amount=400.34
         )
         request.save_to_json()  # First save should succeed
