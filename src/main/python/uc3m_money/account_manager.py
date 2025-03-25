@@ -23,6 +23,10 @@ class AccountManager:
         """
         # Valid IBAN: ES9121000418450200051332
         # Invalid IBAN: "ES91@1000418450200051332
+
+        if not isinstance(iban, str):
+            raise AccountManagementException("IBAN must be a string")
+
         iban = iban.replace(" ", "").upper()
         iban_format = re.compile(r"^ES\d{2}[A-Z0-9]+$")
 

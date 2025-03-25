@@ -22,11 +22,16 @@ class TransferRequest:
             raise AccountManagementException("Invalid recipient IBAN")
         if transfer_type.upper() not in ["ORDINARY", "URGENT", "IMMEDIATE"]:
             raise AccountManagementException("Invalid transfer type")
-        if not (10 <= len(transfer_concept) <= 30 and len(transfer_concept.split()) >= 2):
+        if not isinstance(transfer_concept, str):
+            raise AccountManagementException("Concept must be a string")
+        if not (10 <= len(transfer_concept) <= 30 and len(transfer_concept.split()) >= 2 and
+                TransferRequest._validate_concept_words(transfer_concept)):
             raise AccountManagementException("Concept must be 10-30 chars with at least 2 words")
         if not TransferRequest.validate_date(transfer_date):
             raise AccountManagementException("Invalid transfer date")
-        if not 10.00 <= transfer_amount <= 10000.00:
+        if not isinstance(transfer_amount, (int, float)):
+            raise AccountManagementException("Amount must be a number")
+        if not 10.00 <= float(transfer_amount) <= 10000.00:
             raise AccountManagementException("Amount must be between 10.00 and 10000.00")
         if isinstance(transfer_amount, float) and not round(transfer_amount, 2) == transfer_amount:
             raise AccountManagementException("Amount must have exactly 2 decimal places")
@@ -36,7 +41,7 @@ class TransferRequest:
         self.__transfer_type = transfer_type.upper()
         self.__transfer_concept = transfer_concept  # Fixed attribute name
         self.__transfer_date = transfer_date
-        self.__transfer_amount = transfer_amount
+        self.__transfer_amount = float (transfer_amount)
         justnow = datetime.now(timezone.utc)
         self.__time_stamp = datetime.timestamp(justnow)
 
@@ -104,7 +109,7 @@ class TransferRequest:
                         if all(transfer[key] == transfer_data[key] for key in transfer_data if
                                key != "time_stamp" and key != "transfer_code"):
                             found = True
-                            continue  # Skip adding this to updated_transfers to effectively delete it
+                            continue
                         updated_transfers.append(transfer)
 
             except FileNotFoundError:
@@ -164,12 +169,13 @@ class TransferRequest:
 
     @transfer_amount.setter
     def transfer_amount(self, value):
-        if not 10.00 <= value <= 10000.00:
+        if not isinstance(value, (int, float)):
+            raise AccountManagementException("Amount must be a number")
+        if not 10.00 <= float(value) <= 10000.00:
             raise AccountManagementException("Amount must be between 10.00 and 10000.00")
         if isinstance(value, float) and not round(value, 2) == value:
             raise AccountManagementException("Amount must have exactly 2 decimal places")
-        self.__transfer_amount = value
-
+        self.__transfer_amount = float(value)
     @property
     def transfer_concept(self):
         """Property representing the transfer concept"""
@@ -177,8 +183,10 @@ class TransferRequest:
 
     @transfer_concept.setter
     def transfer_concept(self, value):
-        if not (10 <= len(value) <= 30 and len(value.split()) >= 2):
-            raise AccountManagementException("Concept must be 10-30 chars with at least 2 words")
+        if not (10 <= len(value) <= 30 and len(value.split()) >= 2
+                and TransferRequest._validate_concept_words(value)):
+            raise AccountManagementException("Concept must be 10-30 chars letters with at "
+                                             "least 2 words")
         self.__transfer_concept = value
 
     @property
@@ -203,9 +211,18 @@ class TransferRequest:
         return hashlib.md5(str(self).encode()).hexdigest()
 
     @staticmethod
+    def _validate_concept_words(concept: str) -> bool:
+        """Helper method to validate that all words contain only letters"""
+        words = concept.split()
+        return all(word.isalpha() for word in words)
+
+    @staticmethod
     def validate_concept(concept: str) -> bool:
         """Returns bool regarding if the concept is in the given standards"""
-        return 10 <= len(concept) <= 30 and len(concept.split()) >= 2
+        if not isinstance(concept, str):
+            return False
+        return (10 <= len(concept) <= 30 and len(concept.split()) >= 2
+                and TransferRequest._validate_concept_words(concept))
 
     @staticmethod
     def validate_date(date: str) -> bool:
