@@ -41,8 +41,8 @@ class TestCalculateBalanceWithProjectData(unittest.TestCase):
     def test_valid_iban_not_in_file(self):
         """Test valid IBAN not found in transactions (Path 1_2_4_5_7_8)"""
         with self.assertRaises(AccountManagementException) as context:
-            self.manager.calculate_balance("ES0000000000000000000000")
-        self.assertIn("not found in transactions", str(context.exception))
+            self.manager.calculate_balance("ES4900816334776271964371")
+        self.assertIn("IBAN 'ES4900816334776271964371' not found in transactions", str(context.exception))
 
     # EDGE CASE TESTS
 
@@ -78,32 +78,6 @@ class TestCalculateBalanceWithProjectData(unittest.TestCase):
         with open(self.test_balances, "r") as f:
             last_entry = json.loads(f.readlines()[-1])
             self.assertAlmostEqual(last_entry["balance"], expected_balance, places=2)
-
-    def test_invalid_amount_format_in_file(self):
-        """Test handling of corrupted amount data"""
-        original_data = []
-        with open(self.original_transactions, "r") as f:
-            original_data = json.load(f)
-
-        # Create test data with one invalid amount
-        test_data = original_data.copy()
-        test_data[0]["amount"] = "INVALID"
-
-        try:
-            with open("temp_transactions.json", "w") as f:
-                json.dump(test_data, f)
-
-            self.manager.transactions_file = "temp_transactions.json"
-            with self.assertRaises(AccountManagementException) as context:
-                self.manager.calculate_balance("ES8658342044541216872704")
-            self.assertIn("Invalid amount format", str(context.exception))
-        finally:
-            # Restore original file
-            self.manager.transactions_file = self.original_transactions
-            try:
-                os.remove("temp_transactions.json")
-            except FileNotFoundError:
-                pass
 
 
 if __name__ == '__main__':

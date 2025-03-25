@@ -3,10 +3,9 @@ import os
 import re
 from pathlib import Path
 
-from account_management_exception import AccountManagementException
+from .account_management_exception import AccountManagementException
 from datetime import datetime, timezone
 import json
-#sooooooo annnnnoying
 
 class AccountManager:
     """Class for providing the methods for managing the orders"""
@@ -15,32 +14,32 @@ class AccountManager:
 
     @staticmethod
     def validate_iban(iban: str):
-                """
-                Validates the IBAN, checks if the IBAN has the correct format and
-                passes MOD-97 validation
+        """
+        Validates the IBAN, checks if the IBAN has the correct format and
+        passes MOD-97 validation
 
-                :param iban (str): The IBAN number to be validated
-                :return: bool: True if the IBAN has the correct format and is valid, else false
-                """
-                # Valid IBAN: ES9121000418450200051332
-                # Invalid IBAN: "ES91@1000418450200051332
-                iban = iban.replace(" ", "").upper()
-                iban_format = re.compile(r"^ES\d{2}[A-Z0-9]+$")
+        :param iban (str): The IBAN number to be validated
+        :return: bool: True if the IBAN has the correct format and is valid, else false
+        """
+        # Valid IBAN: ES9121000418450200051332
+        # Invalid IBAN: "ES91@1000418450200051332
+        iban = iban.replace(" ", "").upper()
+        iban_format = re.compile(r"^ES\d{2}[A-Z0-9]+$")
 
-                # Below makes sure parameter matches the IBAN format
-                if not iban_format.match(iban):
-                    return False
-                # Moves the values at the indexes 0-3 to the back of the IBAN
-                mixed_iban = iban[4:] + iban[:4]
-                # Iterates over the IBAN changing the LETTERS to their numeric counterpart
-                # according to the ASCII relation
-                numeric_iban = "".join(str(ord(char) - 55) if char.isalpha()
-                                       else char for char in mixed_iban)
+        # Below makes sure parameter matches the IBAN format
+        if not iban_format.match(iban):
+            return False
+        # Moves the values at the indexes 0-3 to the back of the IBAN
+        mixed_iban = iban[4:] + iban[:4]
+        # Iterates over the IBAN changing the LETTERS to their numeric counterpart
+        # according to the ASCII relation
+        numeric_iban = "".join(str(ord(char) - 55) if char.isalpha()
+                               else char for char in mixed_iban)
 
-                # Converts the IBAN to an integer and performs the MOD 97 on it
-                iban_int = int(numeric_iban)
+        # Converts the IBAN to an integer and performs the MOD 97 on it
+        iban_int = int(numeric_iban)
 
-                return iban_int % 97 == 1
+        return iban_int % 97 == 1
 
 
     def validate_amount(self, amount: str):
@@ -118,29 +117,30 @@ class AccountManager:
 
     def calculate_balance(self, iban: str) -> bool:
 
-        transactions_file = "Transactions.json"
-        balance_file = "balances.json"
+        current_spot = os.getcwd()
+        json_file_path = os.path.join(current_spot, 'Transactions.json')
 
         try:
             if not self.validate_iban(iban):
                 raise AccountManagementException("Invalid IBAN")
 
             try:
-                with open(transactions_file, "r") as file:
+                with open(json_file_path, "r") as file:
                     transactions = json.load(file)
             except FileNotFoundError:
-                raise AccountManagementException(f"Transactions file '{transactions_file}' not found")
+                raise AccountManagementException(f"Transactions file '{json_file_path}' not found")
             except json.JSONDecodeError:
-                raise AccountManagementException(f"Invalid JSON format in '{transactions_file}'")
+                raise AccountManagementException(f"Invalid JSON format in '{json_file_path}'")
 
             balance = 0.0
             iban_found = False
             for transaction in transactions:
                 if transaction.get("IBAN") == iban:
                     iban_found = True
-                    str_amount = transaction.get("amount", "0")
+                    if "amount" not in transaction or not isinstance(transaction["amount"], (int, float, str)):
+                        raise AccountManagementException(f"Invalid amount field in transaction: {transaction}")
                     try:
-                        amount = float(str_amount)
+                        amount = float(transaction["amount"])
                         balance += amount
                     except ValueError:
                         raise AccountManagementException(
@@ -155,8 +155,11 @@ class AccountManager:
                 "balance": balance,
                 "date": datetime.now(timezone.utc).timestamp()
             }
+            current_spot_again = os.getcwd()
+            json_file_path_new = os.path.join(current_spot_again, 'test_balances.json')
+            print(json_file_path_new)
             try:
-                with open(balance_file, "a") as file:
+                with open(json_file_path_new, "a") as file:
                     json.dump(balance_data, file)
                     file.write("\n")
             except Exception as e:
@@ -166,4 +169,4 @@ class AccountManager:
         except AccountManagementException as e:
             raise e
         except Exception as e:
-            raise AccountManagementException(f"Error with processig: {e}")
+            raise AccountManagementException(f"Error with processing: {e}")
